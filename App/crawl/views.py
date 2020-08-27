@@ -1,10 +1,9 @@
-from . import crawler
+from . import crawl
 from flask import request, jsonify
-import requests
-from bs4 import BeautifulSoup as bs4
+from App.crawl.crawler.baiduDistCrawler import BaiduDistCrawler
 
 
-@crawler.route('/test', methods=['POST'])
+@crawl.route('/crawl/test', methods=['POST'])
 def test():
     # requestData = request.get_json(request.form)
     ret = request.form.to_dict()
@@ -24,15 +23,9 @@ def test():
     return jsonify(ret)
 
 
-@crawler.route('/crawlerBaiduDist', methods=['POST'])
+@crawl.route('/crawl/crawlBaiduDist', methods=['POST'])
 def crawlerByKeyword():
     keyword = request.form.get('keyword')
-    r = requests.get('http://www.sowangpan.com/search/' + keyword + '-0-全部-0.html')
-    r.encoding = 'utf-8'
-    soup = bs4(r.text, 'lxml')
-    list_all = soup.find_all(class_='main-x')
-    for item in list_all:
-        h3 = item.find(class_='x-left-h3')
-        print(h3.find('a').attrs['href'])
-        print(h3.find('a').text)
+    baiduDistCrawler = BaiduDistCrawler(keyword)
+    baiduDistCrawler.crawl()
     return 'success'

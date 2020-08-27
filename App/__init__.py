@@ -1,8 +1,8 @@
 import os
 from flask import Flask
 from App.main import main as main_blueprint
-from App.crawler import crawler as crawler_blueprint
-route_prefix = '/crawler'
+from App.crawl import crawl as crawl_blueprint
+route_prefix = '/'
 
 
 def create_app():
@@ -16,7 +16,7 @@ def create_app():
     app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=route_prefix)
     app.debug = True
     app.register_blueprint(blueprint=main_blueprint)
-    app.register_blueprint(blueprint=crawler_blueprint)
+    app.register_blueprint(blueprint=crawl_blueprint)
     return app
 
 
