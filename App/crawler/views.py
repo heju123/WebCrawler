@@ -24,16 +24,15 @@ def test():
     return jsonify(ret)
 
 
-@crawler.route('/testCrawler', methods=['POST'])
-def testCrawler():
-    r = requests.get('https://www.720mp4.com/')
-    r.encoding = 'gb2312'
+@crawler.route('/crawlerBaiduDist', methods=['POST'])
+def crawlerByKeyword():
+    keyword = request.form.get('keyword')
+    r = requests.get('http://www.sowangpan.com/search/' + keyword + '-0-全部-0.html')
+    r.encoding = 'utf-8'
     soup = bs4(r.text, 'lxml')
-    title_all = soup.find_all(class_="title_all")
-    today_item = ''
-    for item in title_all:
-        if (item.find('span').text == '今日更新'):
-            today_item = item
-    print(today_item.next_sibling)
-    res = '123'
-    return res
+    list_all = soup.find_all(class_='main-x')
+    for item in list_all:
+        h3 = item.find(class_='x-left-h3')
+        print(h3.find('a').attrs['href'])
+        print(h3.find('a').text)
+    return 'success'
