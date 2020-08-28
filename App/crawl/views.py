@@ -1,6 +1,7 @@
 from . import crawl
 from flask import request, jsonify
 from App.crawl.crawler.baiduDistCrawler import BaiduDistCrawler
+import threading
 
 
 @crawl.route('/crawl/test', methods=['POST'])
@@ -27,5 +28,6 @@ def test():
 def crawlerByKeyword():
     keyword = request.form.get('keyword')
     baiduDistCrawler = BaiduDistCrawler(keyword)
-    baiduDistCrawler.crawl()
+    thread = threading.Thread(target=baiduDistCrawler.crawl)
+    thread.start()
     return 'success'
