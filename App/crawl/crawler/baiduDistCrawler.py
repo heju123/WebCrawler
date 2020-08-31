@@ -1,10 +1,14 @@
 import requests
 from bs4 import BeautifulSoup as bs4
+import pymongo
+import datetime
 
 
 class BaiduDistCrawler:
     def __init__(self, keyword):
         self.keyword = keyword
+        self.mongo_client = pymongo.MongoClient(host='localhost', port=27017)
+        self.db = self.mongo_client.crawl
 
     def crawl(self):
         self.crawlSowangpan(1)
@@ -19,6 +23,7 @@ class BaiduDistCrawler:
         soup = bs4(r.text, 'lxml')
         list_all = soup.find_all(class_='main-x')
         if (len(list_all) > 0):
+            baidu_dist_col = self.db['baidu_dist']
             for item in list_all:
                 h3 = item.find(class_='x-left-h3')
                 detail_href = h3.find('a').attrs['href']
@@ -33,6 +38,12 @@ class BaiduDistCrawler:
                                 if (key_btn.text == '进入百度网盘下载'):
                                     print(h3.find('a').text)
                                     print(key_btn.attrs['href'])
+                                    insert_item = {
+                                        'name': h3.find('a').text,
+                                        'link': key_btn.attrs['href'],
+                                        'create_time': datetime.datetime.now()
+                                    } 
+                                    result = baidu_dist_col.insert(insert_item)
                     except Exception as e:
                         print(e)
             self.crawlSowangpan(page + 1)
