@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from App.main import main as main_blueprint
 from App.crawl import crawl as crawl_blueprint
+import logging
 route_prefix = '/'
 
 
@@ -17,6 +18,8 @@ def create_app():
     app.debug = True
     app.register_blueprint(blueprint=main_blueprint)
     app.register_blueprint(blueprint=crawl_blueprint)
+
+    logging.basicConfig(level=logging.DEBUG)  # 设置日志级别
     return app
 
 
